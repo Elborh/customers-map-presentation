@@ -1,0 +1,51 @@
+---
+title: "My favourite customers"
+author: "Dmitry B"
+date: '4 April 2019'
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(plotly)
+library(dplyr)
+
+setwd("~/../Data Science/9. Data Products/plotly")
+
+```
+
+
+```{r load_data}
+
+df <- read.csv("customers.csv", sep = ';', stringsAsFactors = FALSE)
+df <- df %>% mutate(popup = paste("<b><a href='", www, "'>", name, "</a></b>", sep=""))
+
+```
+
+## My favourite customers
+
+```{r map, fig.height=5, fig.width=8}
+
+plot_mapbox(mode = 'scattermapbox') %>%
+    add_markers(data=df,
+                x = ~lon, y = ~lat, 
+                split=~name,
+                hoverinfo = "text",
+                hoverlabel = list(bgcolor = I("white")),
+                text = ~popup,
+                size=~vol
+                 ) %>%
+    layout(font = list(color='white'),
+           plot_bgcolor = '#191A1A', paper_bgcolor = '#191A1A',
+           mapbox = list(style = 'dark',
+                       zoom = 9,
+                       center = list(lat = 55.72785,
+                                lon = 37.58941)),
+           legend = list(orientation = 'h',
+                         font = list(size = 10)),
+           margin = list(l = 0, r = 0,
+                         b = 0, t = 0,
+                         pad = 0))
+
+```
